@@ -10,6 +10,7 @@ class ApiController
     public function index(Request $request, Response $response, $args): Response {
         $params = $request->getQueryParams();
         if(isset($params['visitor_name'])) {
+            $visitor_name = $params['visitor_name']==''?'Nameless':$params['visitor_name'];
             $client_ip = $_SERVER['REMOTE_ADDR'];
             $ip_details = json_decode(file_get_contents("http://ipinfo.io/{$client_ip}/json"));
             if(property_exists($ip_details, 'city') && property_exists($ip_details, 'loc') && !property_exists($ip_details, 'bogon')){ // && property_exists($ip_details, 'country')
@@ -29,7 +30,7 @@ class ApiController
             $data = [
                 "client_ip" => $client_ip,
                 "location" => $location,
-                "greeting" => "Hello, ".$params['visitor_name']."!, the temperature is ".$temperature." degrees Celsius in ".$location,
+                "greeting" => "Hello, ".$visitor_name."!, the temperature is ".$temperature." degrees Celsius in ".$location,
             ];
         }else{
             //return invalid parameter error

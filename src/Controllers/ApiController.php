@@ -12,8 +12,8 @@ class ApiController
         if(isset($params['visitor_name'])) {
             $client_ip = $_SERVER['REMOTE_ADDR'];
             $ip_details = json_decode(file_get_contents("http://ipinfo.io/{$client_ip}/json"));
-            if(property_exists($ip_details, 'city') && property_exists($ip_details, 'country') && !property_exists($ip_details, 'bogon')){
-                $location = $ip_details->city . ', ' . $ip_details->country;
+            if(property_exists($ip_details, 'city') && !property_exists($ip_details, 'bogon')){ // && property_exists($ip_details, 'country')
+                $location = $ip_details->city; // . ', ' . $ip_details->country;
             }else{
                 $location = 'Unknown';
             }

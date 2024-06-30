@@ -16,7 +16,7 @@ class ApiController
             if(property_exists($ip_details, 'city') && property_exists($ip_details, 'loc') && !property_exists($ip_details, 'bogon')){ // && property_exists($ip_details, 'country')
                 $location = $ip_details->city; // . ', ' . $ip_details->country;
                 $geo_location = explode(',', $ip_details->loc);
-                $api_key = '02c52a0fa6d8653d1da3d65a06213177';
+                $api_key = $_ENV['WEATHER_KEY'];
                 $weather_details = json_decode(file_get_contents("https://api.openweathermap.org/data/2.5/weather?lat={$geo_location[0]}&lon={$geo_location[1]}&appid={$api_key}&units=metric"));
                 if(property_exists($weather_details, 'main')){
                     $temp_main = $weather_details->main;

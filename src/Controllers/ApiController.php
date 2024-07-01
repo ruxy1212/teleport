@@ -9,28 +9,24 @@ class ApiController
 {
     public function index(Request $request, Response $response, $args): Response {
         $params = $request->getQueryParams();
-        if(isset($params['visitor_name'])) {
+        if(isset($params['visitor_name'])){
             $visitor_name = $params['visitor_name']==''?'Nameless':$params['visitor_name'];
             $client_ip = $_SERVER['REMOTE_ADDR'];
-            $ip_details = json_decode(file_get_contents("http://ipinfo.io/{$client_ip}/json"));
-            if(property_exists($ip_details, 'city') && property_exists($ip_details, 'loc') && !property_exists($ip_details, 'bogon')){ // && property_exists($ip_details, 'country')
-                $location = $ip_details->city; // . ', ' . $ip_details->country;
-                $geo_location = explode(',', $ip_details->loc);
-                $api_key = $_ENV['WEATHER_KEY'];
-                $weather_details = json_decode(file_get_contents("https://api.openweathermap.org/data/2.5/weather?lat={$geo_location[0]}&lon={$geo_location[1]}&appid={$api_key}&units=metric"));
-                if(property_exists($weather_details, 'main')){
-                    $temp_main = $weather_details->main;
-                    if(property_exists($temp_main, 'temp')) $temperature = ceil($temp_main->temp);
-                    else $temperature = 'Unknown';
-                }else $temperature = 'Unknown';
+            $api_key = $_ENV['WEATHER_KEY'];
+            $weather_details = json_decode(file_get_contents("http://api.weatherapi.com/v1/current.json?key={$api_key}&q={$client_ip}&aqi=no");
+            if(property_exists($weather_details, 'location') && property_exists($weather_details, 'current'){
+                $current_weather = $weather_details->current;
+                $location = $weather_details->location;
+                $temperature = (property_exists($current_weather, 'temp_c')) ? ceil($current_weather->temp_c) : 'Unknown';
+                $city = (property_exists($location, 'name')) ? $location->name : 'Unknown';
             }else{
-                $location = 'Unknown';
+                $city = 'Unknown';
                 $temperature = 'Unknown';
             }
             $data = [
                 "client_ip" => $client_ip,
-                "location" => $location,
-                "greeting" => "Hello, ".$visitor_name."!, the temperature is ".$temperature." degrees Celsius in ".$location,
+                "location" => $city,
+                "greeting" => "Hello, ".$visitor_name."!, the temperature is ".$temperature." degrees Celsius in ".$city,
             ];
         }else{
             //return invalid parameter error

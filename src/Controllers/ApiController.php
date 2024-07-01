@@ -13,8 +13,8 @@ class ApiController
             $visitor_name = $params['visitor_name']==''?'Nameless':$params['visitor_name'];
             $client_ip = $_SERVER['REMOTE_ADDR'];
             $api_key = $_ENV['WEATHER_KEY'];
-            $weather_details = json_decode(file_get_contents("http://api.weatherapi.com/v1/current.json?key={$api_key}&q={$client_ip}&aqi=no");
-            if(property_exists($weather_details, 'location') && property_exists($weather_details, 'current'){
+            $weather_details = json_decode(file_get_contents("http://api.weatherapi.com/v1/current.json?key={$api_key}&q={$client_ip}&aqi=no"));
+            if(property_exists($weather_details, 'location') && property_exists($weather_details, 'current')){
                 $current_weather = $weather_details->current;
                 $location = $weather_details->location;
                 $temperature = (property_exists($current_weather, 'temp_c')) ? ceil($current_weather->temp_c) : 'Unknown';
